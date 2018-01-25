@@ -128,9 +128,9 @@ fun! <SID>HiLinkTrace(always)
   redraw
   let synid= hlID(lastlink)
   if !exists("syntaxstack")
-   echo printf("HltTrace: %-".g:hilinks_fmtwidth."s fg<%s> bg<%s>",hilink,synIDattr(synid,"fg"),synIDattr(synid,"bg"))
+   cgete printf("HltTrace: %-".g:hilinks_fmtwidth."s fg<%s> bg<%s>",hilink,synIDattr(synid,"fg"),synIDattr(synid,"bg"))
   else
-   echo printf("SynStack: %-".g:hilinks_fmtwidth."s  HltTrace: %-".g:hilinks_fmtwidth."s fg<%s> bg<%s>",syntaxstack,hilink,synIDattr(synid,"fg"),synIDattr(synid,"bg"))
+   cgete printf("SynStack: %-".g:hilinks_fmtwidth."s\nHltTrace: %-".g:hilinks_fmtwidth."s fg<%s> bg<%s>",syntaxstack,hilink,synIDattr(synid,"fg"),synIDattr(synid,"bg"))
   endif
 
   " restore register a
@@ -138,6 +138,18 @@ fun! <SID>HiLinkTrace(always)
 
   " set up CursorMoved autocmd on bang
   if a:always
+
+  " Store the original window number
+  let l:winnr = winnr()
+
+  " Open a window to show the current list of errors
+  copen 5
+
+  " If focus changed, jump to the last window
+  if l:winnr !=# winnr()
+      wincmd p
+  endif
+
    if !s:HLTmode
 	" install a CursorMoved highlighting trace
 "	call Decho("install CursorMoved HLT")
